@@ -23,14 +23,15 @@ const projectSchema = new mongoose.Schema({
 });
 
 const voteRecordSchema = new mongoose.Schema({
-  code: { type: String, required: true, unique: true },
+  code: { type: String, required: true }, // Removed unique:true
   name: { type: String, required: true },
   projectId: { type: String, required: true },
+  score: { type: Number, required: true },
   votedAt: { type: Date, default: Date.now }
 });
 
 const Project = mongoose.model('Project', projectSchema);
-const VoteRecord = mongoose.model('VoteRecord', voteRecordSchema);
+const VoteRecord = mongoose.model('VoteRecordV2', voteRecordSchema); // Use V2 to avoid old unique index
 
 // ── Valid codes & their weights ───────────────────────────────────────────────
 const CODE_WEIGHTS = {
@@ -58,22 +59,21 @@ mongoose.connection.once('open', seedProjects);
 app.post('/api/validate-code', async (req, res) => {
   try {
     const code = (req.body.code || '').toLowerCase().trim();
+    const name = (req.body.name || '').trim();
 
     if (!CODE_WEIGHTS.hasOwnProperty(code)) {
       return res.status(400).json({ error: 'Invalid code.' });
     }
 
-    // Check if this code already voted
-    const existing = await VoteRecord.findOne({ code });
-    if (existing) {
-      return res.status(409).json({
-        error: `This code has already been used to vote for project ${existing.projectId}.`,
-        alreadyVoted: true,
-        projectId: existing.projectId
-      });
+    if (!name) {
+      return res.status(400).json({ error: 'Name is required.' });
     }
 
-    res.json({ valid: true, weight: CODE_WEIGHTS[code] });
+    // Get all projects this specific user has already voted for
+    const existingVotes = await VoteRecord.find({ name });
+    const votedProjects = existingVotes.map(v => v.projectId);
+
+    res.json({ valid: true, weight: CODE_WEIGHTS[code], votedProjects });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error.' });
@@ -98,9 +98,14 @@ app.post('/api/vote', async (req, res) => {
     const code = (req.body.code || '').toLowerCase().trim();
     const name = (req.body.name || '').trim();
     const projectId = (req.body.projectId || '').trim();
+    const score = Number(req.body.score);
 
     if (!name) {
       return res.status(400).json({ error: 'Name is required.' });
+    }
+
+    if (!score || score < 1 || score > 5) {
+      return res.status(400).json({ error: 'Score must be between 1 and 5.' });
     }
 
     // Validate code
@@ -113,26 +118,25 @@ app.post('/api/vote', async (req, res) => {
       return res.status(400).json({ error: 'Invalid project.' });
     }
 
-    // Enforce one-vote-per-code (atomic upsert)
-    try {
-      await VoteRecord.create({ code, name, projectId });
-    } catch (dupErr) {
-      if (dupErr.code === 11000) {
-        const existing = await VoteRecord.findOne({ code });
-        return res.status(409).json({
-          error: 'You have already voted.',
-          alreadyVoted: true,
-          projectId: existing.projectId
-        });
-      }
-      throw dupErr;
+    // Check if THIS USER already voted for THIS PROJECT
+    const existing = await VoteRecord.findOne({ name, projectId });
+    if (existing) {
+      return res.status(409).json({
+        error: 'You have already voted for this project.',
+        alreadyVoted: true,
+        projectId
+      });
     }
 
-    // Increment vote count
+    // Create the vote record
+    await VoteRecord.create({ code, name, projectId, score });
+
+    // Increment vote count (score * weight)
     const weight = CODE_WEIGHTS[code];
+    const addedVotes = score * weight;
     const project = await Project.findOneAndUpdate(
       { projectId },
-      { $inc: { votes: weight } },
+      { $inc: { votes: addedVotes } },
       { new: true }
     );
 
