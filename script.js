@@ -7,7 +7,7 @@ let currentUser = {
   code: null,
   name: null,
   voteWeight: 0,
-  votedProjects: []
+  votedProjects: {}
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -31,7 +31,7 @@ function setAllVoteBtnsDisabled(disabled) {
   });
 }
 
-function markVotedCard(projectId) {
+function markVotedCard(projectId, score) {
   const card = document.querySelector(`[data-project-id="${projectId}"]`);
   if (card) {
     card.classList.add('voted-card');
@@ -42,22 +42,11 @@ function markVotedCard(projectId) {
     }
     const select = card.querySelector('.score-selector');
     if (select) {
+      select.value = score;
       select.disabled = true;
     }
-  }
-}
-
-// ── Load vote counts from MongoDB ─────────────────────────────────────────────
-async function loadVoteCounts() {
-  try {
-    const res = await fetch(`${API}/votes`);
-    const data = await res.json();
-    Object.entries(data).forEach(([projectId, votes]) => {
-      const card = document.querySelector(`[data-project-id="${projectId}"]`);
-      if (card) card.querySelector('.vote-count').textContent = votes;
-    });
-  } catch (err) {
-    console.error('Failed to load vote counts:', err);
+    const voteCount = card.querySelector('.vote-count');
+    if (voteCount) voteCount.textContent = score;
   }
 }
 
@@ -92,12 +81,12 @@ async function setVotingCode() {
     }
 
     // Valid code
-    currentUser = { code, name, voteWeight: data.weight, votedProjects: data.votedProjects || [] };
+    currentUser = { code, name, voteWeight: data.weight, votedProjects: data.votedProjects || {} };
     showVotingSection();
     setStatus(`✅ Access granted! You can now vote for each project.`, 'success');
 
     // Mark previously voted projects
-    currentUser.votedProjects.forEach(pid => markVotedCard(pid));
+    Object.entries(currentUser.votedProjects).forEach(([pid, score]) => markVotedCard(pid, score));
 
   } catch (err) {
     setStatus('❌ Could not reach the server. Is it running?', 'error');
@@ -122,7 +111,7 @@ async function vote(projectId) {
     return;
   }
 
-  if (currentUser.votedProjects.includes(projectId)) {
+  if (currentUser.votedProjects.hasOwnProperty(projectId)) {
     alert('You have already voted for this project!');
     return;
   }
@@ -155,14 +144,10 @@ async function vote(projectId) {
     }
 
     // Success
-    currentUser.votedProjects.push(projectId);
+    currentUser.votedProjects[projectId] = score;
 
-    // Update the voted card's count in the UI
-    const card = document.querySelector(`[data-project-id="${projectId}"]`);
-    if (card) card.querySelector('.vote-count').textContent = data.votes;
-
-    markVotedCard(projectId);
-    setStatus(`🎉 Your vote for project ${projectId} has been recorded!`, 'success');
+    markVotedCard(projectId, score);
+    setStatus(`🎉 Your score for project ${projectId} has been recorded!`, 'success');
 
   } catch (err) {
     setStatus('❌ Could not reach the server. Please try again.', 'error');
@@ -175,7 +160,7 @@ async function vote(projectId) {
 function resetVoting() {
   if (!confirm('Are you sure you want to switch access codes?')) return;
 
-  currentUser = { code: null, name: null, voteWeight: 0, votedProjects: [] };
+  currentUser = { code: null, name: null, voteWeight: 0, votedProjects: {} };
 
   document.getElementById('voterName').value = '';
   document.getElementById('voterName').disabled = false;
@@ -202,10 +187,7 @@ function resetVoting() {
       select.value = "5";
       select.disabled = false;
     }
+    const voteCount = card.querySelector('.vote-count');
+    if (voteCount) voteCount.textContent = '-';
   });
-
-  loadVoteCounts();
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-window.addEventListener('load', loadVoteCounts);

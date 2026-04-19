@@ -71,7 +71,10 @@ app.post('/api/validate-code', async (req, res) => {
 
     // Get all projects this specific user has already voted for
     const existingVotes = await VoteRecord.find({ name });
-    const votedProjects = existingVotes.map(v => v.projectId);
+    const votedProjects = {};
+    existingVotes.forEach(v => {
+      votedProjects[v.projectId] = v.score;
+    });
 
     res.json({ valid: true, weight: CODE_WEIGHTS[code], votedProjects });
   } catch (err) {
