@@ -6,4 +6,5 @@ env
 .env.development
 .env.*.local
 .env.development.local
-.env.production.localnode_modules/
+.env.production.local
+node_modules/
