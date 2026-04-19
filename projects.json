@@ -21,12 +21,17 @@
   },
   {
     "id": "PROJ-005",
-    "name": "🔐 Secure Vault",
-    "description": "Next-generation password manager with biometric authentication."
+    "name": "HireMachine",
+    "description": "A persistent AI identity layer that writes, applies, and communicates across the web"
   },
   {
     "id": "PROJ-006",
-    "name": "🚀 Space Explorer",
-    "description": "Virtual reality educational platform for exploring the solar system."
+    "name": "Rocket-Simulator",
+    "description": "An AI-powered system that turns natural language into fully simulated rocket designs."
+  },
+  {
+    "id": "PROJ-007",
+    "name": "TeamConnect",
+    "description": "It is a gamified HR platform designed to boost team engagement, recognition, and motivation through fun activities, rewards, and peer appreciation."
   }
 ]
