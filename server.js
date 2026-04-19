@@ -35,8 +35,8 @@ const VoteRecord = mongoose.model('VoteRecordV2', voteRecordSchema); // Use V2 t
 
 // ── Valid codes & their weights ───────────────────────────────────────────────
 const CODE_WEIGHTS = {
-  'vote2024': 1,
-  'judge': 5
+  'victorhacks': 1,
+  'judge26': 2.5
 };
 
 // Seed project documents if they don't exist yet
