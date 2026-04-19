@@ -1,4 +1,5 @@
 // ── Config ────────────────────────────────────────────────────────────────────
+// CHANGE THIS URL to your live Render URL once deployed (e.g., 'https://victor-hackathon.onrender.com/api')
 const API = 'http://localhost:3001/api';
 
 // Current user state
