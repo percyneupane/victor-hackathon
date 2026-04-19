@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏆 Hackathon Voting App</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -16,14 +18,13 @@
 
         <!-- Authentication Section -->
         <div class="auth-section">
+            <div class="code-input-group" style="margin-bottom: 10px;">
+                <label for="voterName">Enter Your Name:</label>
+                <input type="text" id="voterName" placeholder="Enter your full name" autocomplete="off">
+            </div>
             <div class="code-input-group">
                 <label for="votingCode">Enter Your Voting Code:</label>
-                <input 
-                    type="text" 
-                    id="votingCode" 
-                    placeholder="e.g., students or admin" 
-                    autocomplete="off"
-                >
+                <input type="text" id="votingCode" placeholder="Enter your access code" autocomplete="off">
                 <button onclick="setVotingCode()">Submit Code</button>
             </div>
             <div id="codeStatus" class="status-message"></div>
@@ -112,4 +113,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>

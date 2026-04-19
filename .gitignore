@@ -1,0 +1,9 @@
+.env
+env
+.env.local
+.env.example
+.env.production
+.env.development
+.env.*.local
+.env.development.local
+.env.production.localnode_modules/
