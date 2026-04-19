@@ -50,6 +50,47 @@ function markVotedCard(projectId, score) {
   }
 }
 
+// ── Load projects from JSON ───────────────────────────────────────────────────
+async function loadProjects() {
+  try {
+    const res = await fetch('projects.json');
+    const projects = await res.json();
+    
+    const grid = document.getElementById('projectsGrid');
+    grid.innerHTML = ''; // clear
+
+    projects.forEach(project => {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.dataset.projectId = project.id;
+      
+      card.innerHTML = `
+        <h2>${project.name}</h2>
+        <p>${project.description}</p>
+        <div class="vote-info">
+            <span class="vote-count">-</span>
+            <span class="vote-label">Your Score</span>
+        </div>
+        <div class="score-input">
+            <label for="score-${project.id}">Score:</label>
+            <select class="score-selector" id="score-${project.id}">
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Good</option>
+                <option value="3">3 - Average</option>
+                <option value="2">2 - Fair</option>
+                <option value="1">1 - Poor</option>
+            </select>
+        </div>
+        <button class="vote-btn" onclick="vote('${project.id}')">Vote</button>
+      `;
+      grid.appendChild(card);
+    });
+  } catch (err) {
+    console.error('Failed to load projects:', err);
+    setStatus('❌ Failed to load projects list.', 'error');
+  }
+}
+
 // ── Submit the access code ────────────────────────────────────────────────────
 async function setVotingCode() {
   const name = document.getElementById('voterName').value.trim();
@@ -191,3 +232,6 @@ function resetVoting() {
     if (voteCount) voteCount.textContent = '-';
   });
 }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+window.addEventListener('load', loadProjects);

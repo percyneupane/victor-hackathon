@@ -1,0 +1,32 @@
+[
+  {
+    "id": "PROJ-001",
+    "name": "🤖 AI Chat Bot",
+    "description": "An intelligent conversational AI that learns from user interactions."
+  },
+  {
+    "id": "PROJ-002",
+    "name": "🌍 Eco Tracker",
+    "description": "Track and reduce your carbon footprint with real-time analytics."
+  },
+  {
+    "id": "PROJ-003",
+    "name": "❤️ Health Connect",
+    "description": "Telemedicine platform connecting patients with healthcare professionals."
+  },
+  {
+    "id": "PROJ-004",
+    "name": "🌱 Smart Garden",
+    "description": "IoT-powered gardening system that optimizes plant growth."
+  },
+  {
+    "id": "PROJ-005",
+    "name": "🔐 Secure Vault",
+    "description": "Next-generation password manager with biometric authentication."
+  },
+  {
+    "id": "PROJ-006",
+    "name": "🚀 Space Explorer",
+    "description": "Virtual reality educational platform for exploring the solar system."
+  }
+]

@@ -40,15 +40,24 @@ const CODE_WEIGHTS = {
 };
 
 // Seed project documents if they don't exist yet
-const PROJECT_IDS = ['PROJ-001', 'PROJ-002', 'PROJ-003', 'PROJ-004', 'PROJ-005', 'PROJ-006'];
+const fs = require('fs');
+let PROJECT_IDS = [];
 
 async function seedProjects() {
-  for (const id of PROJECT_IDS) {
-    await Project.findOneAndUpdate(
-      { projectId: id },
-      { $setOnInsert: { projectId: id, votes: 0 } },
-      { upsert: true, new: true }
-    );
+  try {
+    const data = fs.readFileSync(path.join(__dirname, 'projects.json'), 'utf8');
+    const projects = JSON.parse(data);
+    PROJECT_IDS = projects.map(p => p.id);
+    
+    for (const id of PROJECT_IDS) {
+      await Project.findOneAndUpdate(
+        { projectId: id },
+        { $setOnInsert: { projectId: id, votes: 0 } },
+        { upsert: true, new: true }
+      );
+    }
+  } catch (err) {
+    console.error('Failed to load projects.json for seeding:', err);
   }
 }
 mongoose.connection.once('open', seedProjects);
