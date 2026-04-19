@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Hackathon Voting App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏆 Hackathon Voting App</h1>
+            <p>Vote for your favorite projects!</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div class="auth-section">
+            <div class="code-input-group">
+                <label for="votingCode">Enter Your Voting Code:</label>
+                <input 
+                    type="text" 
+                    id="votingCode" 
+                    placeholder="e.g., students or admin" 
+                    autocomplete="off"
+                >
+                <button onclick="setVotingCode()">Submit Code</button>
+            </div>
+            <div id="codeStatus" class="status-message"></div>
+        </div>
+
+        <!-- User Info -->
+        <div id="userInfo" class="user-info" style="display: none;"></div>
+
+        <!-- Voting Section -->
+        <div id="votingSection" style="display: none;">
+            <!-- Projects Grid -->
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card" data-project-id="PROJ-001">
+                    <h2>🤖 AI Chat Bot</h2>
+                    <p>An intelligent conversational AI that learns from user interactions.</p>
+                    <div class="vote-info">
+                        <span class="vote-count">0</span>
+                        <span class="vote-label">votes</span>
+                    </div>
+                    <button class="vote-btn" onclick="vote('PROJ-001')">Vote</button>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card" data-project-id="PROJ-002">
+                    <h2>🌍 Eco Tracker</h2>
+                    <p>Track and reduce your carbon footprint with real-time analytics.</p>
+                    <div class="vote-info">
+                        <span class="vote-count">0</span>
+                        <span class="vote-label">votes</span>
+                    </div>
+                    <button class="vote-btn" onclick="vote('PROJ-002')">Vote</button>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card" data-project-id="PROJ-003">
+                    <h2>❤️ Health Connect</h2>
+                    <p>Telemedicine platform connecting patients with healthcare professionals.</p>
+                    <div class="vote-info">
+                        <span class="vote-count">0</span>
+                        <span class="vote-label">votes</span>
+                    </div>
+                    <button class="vote-btn" onclick="vote('PROJ-003')">Vote</button>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card" data-project-id="PROJ-004">
+                    <h2>🌱 Smart Garden</h2>
+                    <p>IoT-powered gardening system that optimizes plant growth.</p>
+                    <div class="vote-info">
+                        <span class="vote-count">0</span>
+                        <span class="vote-label">votes</span>
+                    </div>
+                    <button class="vote-btn" onclick="vote('PROJ-004')">Vote</button>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card" data-project-id="PROJ-005">
+                    <h2>📚 Study Buddy</h2>
+                    <p>AI-powered study companion with personalized learning recommendations.</p>
+                    <div class="vote-info">
+                        <span class="vote-count">0</span>
+                        <span class="vote-label">votes</span>
+                    </div>
+                    <button class="vote-btn" onclick="vote('PROJ-005')">Vote</button>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card" data-project-id="PROJ-006">
+                    <h2>🛡️ SafeRoute</h2>
+                    <p>Navigation app with real-time safety alerts and community insights.</p>
+                    <div class="vote-info">
+                        <span class="vote-count">0</span>
+                        <span class="vote-label">votes</span>
+                    </div>
+                    <button class="vote-btn" onclick="vote('PROJ-006')">Vote</button>
+                </div>
+            </div>
+
+            <!-- Change Code Button -->
+            <div class="footer">
+                <button class="change-code-btn" onclick="resetVoting()">Change Voting Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
